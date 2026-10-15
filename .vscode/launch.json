@@ -1,0 +1,61 @@
+{
+    "version":  "0.2.0",
+    "configurations":  [
+                           {
+                               "name":  "Debug active C++ file (MinGW)",
+                               "type":  "cppdbg",
+                               "request":  "launch",
+                               "args":  [
+
+                                        ],
+                               "stopAtEntry":  false,
+                               "externalConsole":  true,
+                               "cwd":  "${workspaceFolder}",
+                               "program":  "${workspaceFolder}/build/Debug/outDebug.exe",
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
+                               "setupCommands":  [
+                                                     {
+                                                         "description":  "Enable pretty-printing for gdb",
+                                                         "text":  "-enable-pretty-printing",
+                                                         "ignoreFailures":  true
+                                                     }
+                                                 ],
+                               "preLaunchTask":  "C/C++: g++.exe build active file",
+                               "environment":  [
+                                                   {
+                                                       "value":  "C:\\MinGW\\bin;${env:PATH}",
+                                                       "name":  "PATH"
+                                                   }
+                                               ]
+                           },
+                           {
+                               "name":  "C/C++ Runner: Debug Session",
+                               "type":  "cppdbg",
+                               "request":  "launch",
+                               "args":  [
+
+                                        ],
+                               "stopAtEntry":  false,
+                               "externalConsole":  true,
+                               "cwd":  "${workspaceFolder}",
+                               "program":  "${workspaceFolder}/build/Debug/outDebug.exe",
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
+                               "setupCommands":  [
+                                                     {
+                                                         "description":  "Enable pretty-printing for gdb",
+                                                         "text":  "-enable-pretty-printing",
+                                                         "ignoreFailures":  true
+                                                     }
+                                                 ],
+                               "preLaunchTask":  "C/C++: g++.exe build active file",
+                               "environment":  [
+                                                   {
+                                                       "value":  "C:\\MinGW\\bin;${env:PATH}",
+                                                       "name":  "PATH"
+                                                   }
+                                               ]
+                           }
+                       ]
+}
