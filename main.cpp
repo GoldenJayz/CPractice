@@ -13,7 +13,15 @@ bool isInteger(string x) {
     return true;
 }
 
-
+/**
+ * @brief Tokenizes the arguments of the user input
+ * 
+ * Tokens are each one of the arguments for the command
+ * which has the action, keyname, and then the value.
+ * 
+ * @param userPut The user input string
+ * @return The tokens sent back in a list
+ */
 list<string> tokenize(string userPut) {
     string actions[] = {"SET","GET","TTL","INCR","BEGIN","EXPIRE","ROLLBACK"};
     string temp = "";
@@ -21,13 +29,14 @@ list<string> tokenize(string userPut) {
     bool inKeyname = false;
     // this specifically checks the action
     for (int i = 0; i < userPut.length() + 1; i++) {
+        int retvalSize = retval.size();
+
         // go through every character and check if it is GET, SET, INCR, and ...
-        int listLength = size(retval);
         char currentChar = userPut[i];
 
         temp += currentChar; // add the current character to the temp
         // Since the minimum action keyword is 3 letters lock this behind a check for efficiency
-        if (i+1 >= 3 && retval.size() == 0) { // since it doesn't get incremented until the end of the run of the current thing
+        if (i+1 >= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
             for (int c = 0; c < size(actions); c++) {
                 if (temp == actions[c]) {
                     retval.push_back(temp);
@@ -35,29 +44,29 @@ list<string> tokenize(string userPut) {
                 }
             } // end for 
         } // end if
-        // Obtain keyname
-        if (currentChar == '\000' || currentChar == ' ') {
-            if (inKeyname) {
-                retval.push_back(temp);
+
+        // Obtain keyname (2nd argument will always be keyname)
+        if (retvalSize == 1) {
+            if (currentChar == '\000' || currentChar == ' ') {
+                if (inKeyname) {
+                    retval.push_back(temp);
+                }
+                inKeyname = !inKeyname;
+                temp = "";
             }
-            inKeyname = !inKeyname;
-            temp = "";
         }
 
-
-        // if (retval.size() != 0 && currentChar != ' ' && inKeyname == true) {
-        //     temp += currentChar;
-        // }
-
-
-        // if (listLength != size(retval)) {
-        //     break;
-        // }
-
+        // everything after is value
+        if (retvalSize == 2) {
+            if (currentChar == '\000') {
+                retval.push_back(temp);
+            }
+        }
     } // end for
 
     return retval;
 } // end tokenize
+
 
 int main() {
     bool isRunning = true;
@@ -81,6 +90,5 @@ int main() {
             std::cout << output << std::endl;
         }
     }
-
     return 0;
 }
