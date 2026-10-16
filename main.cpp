@@ -3,10 +3,12 @@
 #include <unordered_map>
 #include <list>
 #include <iterator>
+#include <vector>
 
 using std::string;
 using std::size;
 using std::list;
+using std::vector;
 
 // check if string can be converted to an integer
 bool isInteger(string x) {
@@ -22,10 +24,10 @@ bool isInteger(string x) {
  * @param userPut The user input string
  * @return The tokens sent back in a list
  */
-list<string> tokenize(string userPut) {
+vector<string> tokenize(string userPut) {
     string actions[] = {"SET","GET","TTL","INCR","BEGIN","EXPIRE","ROLLBACK"};
     string temp = "";
-    list<string> retval;
+    vector<string> retval;
     bool inKeyname = false;
     // this specifically checks the action
     for (int i = 0; i < userPut.length() + 1; i++) {
@@ -67,12 +69,16 @@ list<string> tokenize(string userPut) {
     return retval;
 } // end tokenize
 
+int setKey(string key, string keyValue) {
+
+}
+
 
 int main() {
     bool isRunning = true;
 
     std::cout << "hi" << std::endl;
-    std::unordered_map<std::string, int> keyMap;
+    std::unordered_map<std::string, int> keyMap; // store the 
     // can run a check if the input is an integer or the variable is an integer
     // Need to run a loop where somebody can interact with the data and a way to exit.
 
@@ -83,12 +89,16 @@ int main() {
 
         // Tokenize input perform a string split on the action, on the space
 
-        list<string> retval = tokenize(userInput);
+        vector<string> retval = tokenize(userInput);
 
+
+        // debug view tokens
         for (int i = 0; i < retval.size(); i++) {
-            string output = *std::next(retval.begin(), i);
-            std::cout << output << std::endl;
+            std::cout << retval[i] << std::endl;
         }
+
+
+        //
     }
     return 0;
 }
