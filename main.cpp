@@ -4,9 +4,9 @@
 #include <list>
 #include <iterator>
 #include <vector>
+#include <headers/Redis.hpp>
 
 using std::string;
-using std::size;
 using std::list;
 using std::vector;
 
@@ -25,28 +25,25 @@ bool isInteger(string x) {
  * @return The tokens sent back in a list
  */
 vector<string> tokenize(string userPut) {
-    string actions[] = {"SET","GET","TTL","INCR","BEGIN","EXPIRE","ROLLBACK"};
+    vector<string> actions = {"SET","GET","TTL", "EXIT", "INCR","BEGIN","EXPIRE","ROLLBACK"};
     string temp = "";
     vector<string> retval;
     bool inKeyname = false;
     // this specifically checks the action
     for (int i = 0; i < userPut.length() + 1; i++) {
         int retvalSize = retval.size();
-
         // go through every character and check if it is GET, SET, INCR, and ...
         char currentChar = userPut[i];
-
         temp += currentChar; // add the current character to the temp
         // Since the minimum action keyword is 3 letters lock this behind a check for efficiency
         if (i+1 >= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
-            for (int c = 0; c < size(actions); c++) {
+            for (int c = 0; c < actions.size(); c++) {
                 if (temp == actions[c]) {
                     retval.push_back(temp);
                     break; // once it finds action break out of the loop
                 }
             } // end for 
         } // end if
-
         // Obtain keyname (2nd argument will always be keyname)
         if (retvalSize == 1) {
             if (currentChar == '\000' || currentChar == ' ') {
@@ -57,7 +54,6 @@ vector<string> tokenize(string userPut) {
                 temp = "";
             }
         }
-
         // everything after is value
         if (retvalSize == 2) {
             if (currentChar == '\000') {
@@ -68,6 +64,8 @@ vector<string> tokenize(string userPut) {
 
     return retval;
 } // end tokenize
+
+
 
 int setKey(string key, string keyValue) {
 
@@ -82,15 +80,15 @@ int main() {
     // can run a check if the input is an integer or the variable is an integer
     // Need to run a loop where somebody can interact with the data and a way to exit.
 
+    Redis redis;
+
     while (isRunning) {
         string userInput = "";
         std::cout << "> ";
         std::getline(std::cin, userInput); // use getline instead of cin
 
         // Tokenize input perform a string split on the action, on the space
-
         vector<string> retval = tokenize(userInput);
-
 
         // debug view tokens
         for (int i = 0; i < retval.size(); i++) {
