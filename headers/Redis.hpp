@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 
 #include <unordered_map>
 #include <string>
@@ -10,7 +10,11 @@ class Redis {
         std::unordered_map<string, string> keyMap;
 
     public:
-        string getKey() {
+        string getKey(string key) {
+            return keyMap[key];
+        }
 
+        void setKey(string key, string value) {
+            keyMap[key] = value;
         }
 };

@@ -4,7 +4,7 @@
 #include <list>
 #include <iterator>
 #include <vector>
-#include <headers/Redis.hpp>
+#include "headers/Redis.hpp"
 
 using std::string;
 using std::list;
@@ -36,7 +36,7 @@ vector<string> tokenize(string userPut) {
         char currentChar = userPut[i];
         temp += currentChar; // add the current character to the temp
         // Since the minimum action keyword is 3 letters lock this behind a check for efficiency
-        if (i+1 >= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
+        if (i+1 <= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
             for (int c = 0; c < actions.size(); c++) {
                 if (temp == actions[c]) {
                     retval.push_back(temp);
@@ -48,6 +48,7 @@ vector<string> tokenize(string userPut) {
         if (retvalSize == 1) {
             if (currentChar == '\000' || currentChar == ' ') {
                 if (inKeyname) {
+                    temp.pop_back(); // removes end of line char
                     retval.push_back(temp);
                 }
                 inKeyname = !inKeyname;
@@ -74,13 +75,10 @@ int setKey(string key, string keyValue) {
 
 int main() {
     bool isRunning = true;
+    Redis redis; // initialize key store system
 
-    std::cout << "hi" << std::endl;
-    std::unordered_map<std::string, int> keyMap; // store the 
     // can run a check if the input is an integer or the variable is an integer
     // Need to run a loop where somebody can interact with the data and a way to exit.
-
-    Redis redis;
 
     while (isRunning) {
         string userInput = "";
@@ -89,14 +87,20 @@ int main() {
 
         // Tokenize input perform a string split on the action, on the space
         vector<string> retval = tokenize(userInput);
+        string action = retval[0];
 
-        // debug view tokens
-        for (int i = 0; i < retval.size(); i++) {
-            std::cout << retval[i] << std::endl;
+        // handle the action corresponding to redis object
+        if (action == "GET") {
+            string value = redis.getKey(retval[1]);
+            std::cout << value << std::endl;
         }
-
-
-        //
+        else if (action == "SET") {
+            redis.setKey(retval[1], retval[2]);
+            std::cout << redis.getKey(retval[1]) << std::endl;
+        }
+        else if (action == "EXIT") {
+            isRunning = false;
+        }
     }
     return 0;
 }
