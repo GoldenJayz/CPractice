@@ -10,11 +10,6 @@ using std::string;
 using std::list;
 using std::vector;
 
-// check if string can be converted to an integer
-bool isInteger(string x) {
-    return true;
-}
-
 /**
  * @brief Tokenizes the arguments of the user input
  * 
@@ -36,7 +31,7 @@ vector<string> tokenize(string userPut) {
         char currentChar = userPut[i];
         temp += currentChar; // add the current character to the temp
         // Since the minimum action keyword is 3 letters lock this behind a check for efficiency
-        if (i+1 <= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
+        if (i+1 >= 3 && retvalSize == 0) { // since it doesn't get incremented until the end of the run of the current thing
             for (int c = 0; c < actions.size(); c++) {
                 if (temp == actions[c]) {
                     retval.push_back(temp);
@@ -67,12 +62,6 @@ vector<string> tokenize(string userPut) {
 } // end tokenize
 
 
-
-int setKey(string key, string keyValue) {
-
-}
-
-
 int main() {
     bool isRunning = true;
     Redis redis; // initialize key store system
@@ -91,15 +80,21 @@ int main() {
 
         // handle the action corresponding to redis object
         if (action == "GET") {
-            string value = redis.getKey(retval[1]);
+            string value = redis.getKey(retval[1]).value;
             std::cout << value << std::endl;
         }
         else if (action == "SET") {
             redis.setKey(retval[1], retval[2]);
-            std::cout << redis.getKey(retval[1]) << std::endl;
         }
         else if (action == "EXIT") {
             isRunning = false;
+        }
+        else if (action == "EXPIRE") {
+            int expire = std::stoi(retval[2]);
+            redis.setExpire(retval[1], expire);
+        }
+        else if (action == "TTL") {
+            redis.ttl(retval[1]);
         }
     }
     return 0;
